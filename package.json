@@ -1,0 +1,22 @@
+{
+  "name": "react-cat-taco",
+  "version": "1.0.0",
+  "description": "Cat vs taco tic tac toe",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "dev": "webpack -d --watch",
+    "build" : "webpack -p"
+  },
+  "author": "BintLopez",
+  "license": "ISC",
+  "dependencies": {
+    "babel-core": "^6.23.1",
+    "babel-loader": "^6.3.1",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-react": "^6.23.0",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "webpack": "^2.2.1"
+  }
+}
