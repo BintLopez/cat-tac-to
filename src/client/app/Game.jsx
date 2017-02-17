@@ -1,14 +1,16 @@
 import React from 'react';
 import Board from './Board.jsx';
 
-
-
 class Game extends React.Component {
   constructor() {
     super();
+    var squares = [];
+    for (var i = 1; i <= 9; i++) {
+       squares.push({i});
+    }
     this.state = {
       history: [{
-        squares: Array(9).fill(null)
+        squares: squares
       }],
       xIsNext: true,
       stepNumber: 0,
@@ -21,11 +23,13 @@ class Game extends React.Component {
     var history = this.state.history.slice(0, this.state.stepNumber + 1);
     var current = history[history.length - 1];
     const squares = current.squares.slice();
-    if (calculateWinner(squares) || squares[i]) {
+
+    if (calculateWinner(squares) || squares[i].character) {
       return;
     }
 
-    squares[i] = this.state.xIsNext ? 'cat' : 'taco';
+    squares[i].character = this.state.xIsNext ? this.state.xOpponent : this.state.xCharacter;
+    squares[i].imgUrl = this.pickImage(squares[i].character);
 
     this.setState({
       history: history.concat([{
@@ -43,8 +47,7 @@ class Game extends React.Component {
     });
   }
 
-  pickImage() {
-    const character = this.state.xIsNext ? this.state.xOpponent : this.state.xCharacter;
+  pickImage(character) {
     const charactersMap = {
       cat: [
         "https://s-media-cache-ak0.pinimg.com/736x/3c/98/7b/3c987b4a025aade603fdc3352947ee6e.jpg", // on pb&j
@@ -68,12 +71,12 @@ class Game extends React.Component {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
-    
+
     let status;
     if (winner) {
       status = 'Winner: ' + winner;
     } else {
-      status = 'Next player: ' + (this.state.xIsNext ? 'cat' : 'taco');
+      status = 'Next player: ' + (this.state.xIsNext ? this.state.xOpponent : this.state.xCharacter);
     }
 
     const moves = history.map((step, move) => {
@@ -90,7 +93,7 @@ class Game extends React.Component {
     return (
       <div className="game">
         <div className="game-board">
-          <Board squares={current.squares} imgUrl={this.pickImage()} onClick={(i) => this.handleClick(i)} />
+          <Board squares={current.squares} onClick={(i) => this.handleClick(i)} />
         </div>
         <div className="game-info">
           <div>{status}</div>
@@ -102,13 +105,13 @@ class Game extends React.Component {
 }
 
 function shuffleArray(array) {
-    for (var i = array.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
-    }
-    return array;
+  for (var i = array.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = array[i];
+      array[i] = array[j];
+      array[j] = temp;
+  }
+  return array;
 }
 
 function calculateWinner(squares) {
@@ -124,8 +127,8 @@ function calculateWinner(squares) {
   ];
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+    if (squares[a].character && squares[a].character === squares[b].character && squares[a].character === squares[c].character) {
+      return squares[a].character;
     }
   }
   return null;
